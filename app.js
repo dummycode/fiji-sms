@@ -3,10 +3,13 @@ var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
+var mysql = require('mysql')
 
 var indexRouter = require('./src/http/routes/index')
 
 var responder = require('./src/core/responder')
+
+var database = require('./src/core/database')
 
 var app = express()
 
@@ -27,6 +30,7 @@ const apiRoutes = {
   index: '',
   messages: 'messages',
   users: 'users',
+  contacts: 'contacts',
 }
 for (const [key, route] of Object.entries(apiRoutes)) {
   app.use(`/api/${route}`, require(`./src/http/routes/api/${key}`))

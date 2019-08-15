@@ -1,0 +1,18 @@
+{
+  "app_name": "SMS",
+  "app_desc": "Generic texting system",
+  "api": {
+    "version": "0.0.1"
+  },
+  "auth": {
+    "secret": "mysecretkey",
+    "timeout": 2592000
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "user": "user",
+    "password": "password",
+    "database": "sms",
+    "port": 3306
+  }
+}
