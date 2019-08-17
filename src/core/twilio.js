@@ -1,12 +1,20 @@
 var config = require('./config')
 
-// Download the helper library from https://www.twilio.com/docs/node/install
-// Your Account Sid and Auth Token from twilio.com/console
-// DANGER! This is insecure. See http://twil.io/secure
-const accountSid = config.get('twilio.accountSid')
 const authToken = config.get('twilio.authToken')
-const client = require('twilio')(accountSid, authToken)
+const client = require('twilio')(
+  config.get('twilio.accountSid'),
+  config.get('twilio.authToken'),
+)
 
+const sendMessage = (to, body) => {
+  return client.messages.create({
+    body,
+    from: '+12073053886',
+    to,
+  })
+}
+
+// TODO should export helper functions
 module.exports = {
-  client,
+  sendMessage,
 }

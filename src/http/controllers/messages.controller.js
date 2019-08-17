@@ -16,18 +16,14 @@ const send = (req, res) => {
       }),
     )
   } else {
-    twilio.client.messages
-      .create({
-        body: req.body.message,
-        from: '+12073053886',
-        to: '+17202567244',
-      })
+    twilio
+      .sendMessage('+17202567244', req.body.message)
       .then((message) =>
         responder.successResponse(res, {
           message: 'message successfully sent',
         }),
       )
-      .catch((err) => responder.ohShitResponse(res))
+      .catch((err) => responder.ohShitResponse(res, err))
   }
 }
 
