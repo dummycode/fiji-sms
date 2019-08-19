@@ -14,7 +14,16 @@ const sendMessage = (to, body) => {
   })
 }
 
+const sendMassMessage = (tos, body) => {
+  return Promise.all(
+    tos.map((to) => {
+      sendMessage(to, body)
+    }),
+  )
+}
+
 // TODO should export helper functions
 module.exports = {
   sendMessage,
+  sendMassMessage,
 }

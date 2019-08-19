@@ -1,6 +1,7 @@
 var responder = require('../../core/responder')
 var twilio = require('../../core/twilio')
 var { validationResult } = require('express-validator')
+var contactsManager = require('../../managers/contacts.manager')
 
 const index = (req, res) => {
   responder.successResponse(res, { message: 'messages index page' })
@@ -16,14 +17,17 @@ const send = (req, res) => {
       }),
     )
   } else {
-    twilio
-      .sendMessage('+17202567244', req.body.message)
-      .then((message) =>
-        responder.successResponse(res, {
-          message: 'message successfully sent',
-        }),
-      )
-      .catch((err) => responder.ohShitResponse(res, err))
+    const contacts = contactsManager.fetchAllContacts().then((contacts) => {
+      const phoneNumbers = contacts.map((contact) => contact.phone_number)
+      twilio
+        .sendMassMessage(phoneNumbers, req.body.message)
+        .then((message) =>
+          responder.successResponse(res, {
+            message: 'message successfully sent',
+          }),
+        )
+        .catch((err) => responder.ohShitResponse(res, err))
+    })
   }
 }
 

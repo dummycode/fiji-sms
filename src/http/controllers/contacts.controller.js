@@ -1,11 +1,11 @@
 var responder = require('../../core/responder')
-var manager = require('../../managers/contacts.manager')
+var contactsManager = require('../../managers/contacts.manager')
 var { validationResult } = require('express-validator')
 
 var { ContactNotFound, ContactAlreadyExists } = require('../../core/errors')
 
 const index = (req, res) => {
-  manager
+  contactsManager
     .fetchAllContacts()
     .then((results) => {
       responder.successResponse(res, results)
@@ -33,7 +33,7 @@ const create = (req, res) => {
       }),
     )
   } else {
-    return manager
+    return contactsManager
       .createContact(req.body.name, req.body.phone_number)
       .then((results) => {
         responder.itemCreatedResponse(res, results[0], {
