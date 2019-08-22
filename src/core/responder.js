@@ -46,10 +46,35 @@ itemCreatedResponse = (res, data = [], message = '') => {
   })
 }
 
+itemUpdatedResponse = (res, data = [], message = '') => {
+  const content = {
+    code: 204,
+    message,
+    data,
+  }
+
+  res.status(200).json({
+    content,
+  })
+}
+
+itemDeletedResponse = (res, data = [], message = '') => {
+  const content = {
+    code: 204,
+    message,
+    data,
+  }
+
+  res.status(200).json({
+    content,
+  })
+}
+
 module.exports = {
   notFoundResponse,
   successResponse,
   ohShitResponse,
   itemCreatedResponse,
   badRequestResponse,
+  itemDeletedResponse,
 }

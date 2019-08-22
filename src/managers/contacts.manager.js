@@ -20,7 +20,24 @@ const createContact = (name, number) => {
     })
 }
 
+const deleteContact = (id) => {
+  return connection
+    .query('SELECT * FROM contact WHERE id=? AND deleted_at IS NULL', [id])
+    .then((results) => {
+      const contact = results[0]
+      if (!contact) {
+        throw new ContactNotFound()
+      }
+      // Delete the contact
+      return connection.query(
+        'UPDATE contact SET deleted_at = CURRENT_TIMESTAMP(3) WHERE id = ?',
+        [id],
+      )
+    })
+}
+
 module.exports = {
   fetchAllContacts,
   createContact,
+  deleteContact,
 }

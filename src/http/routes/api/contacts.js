@@ -7,6 +7,6 @@ var { validate } = require('../../controllers/validators/contacts.validator')
 router.get('/', controller.index)
 router.get('/', controller.fetch)
 router.post('/', [validate('create')], controller.create)
-router.delete('/:id', [validate('delete')], controller.remove)
+router.delete('/:id', [validate('remove')], controller.remove)
 
 module.exports = router
