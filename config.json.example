@@ -14,7 +14,7 @@
     "password": "password",
     "database": "sms",
     "port": 3306
-  }
+  },
   "twilio": {
     "accountSid": "myAccountSid",
     "authToken": "myAuthToken"
