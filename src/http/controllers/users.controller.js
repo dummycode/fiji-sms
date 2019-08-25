@@ -9,6 +9,7 @@ const index = (req, res) => {
 }
 
 const whoami = (req, res) => {
+  // TODO this should live on index controller
   if (validationResult(req).errors.length !== 0) {
     responder.badRequestResponse(
       res,
@@ -56,6 +57,7 @@ const register = (req, res) => {
 }
 
 const login = (req, res) => {
+  // TODO this should live on index controller
   if (validationResult(req).errors.length !== 0) {
     responder.badRequestResponse(
       res,
