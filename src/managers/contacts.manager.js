@@ -1,7 +1,10 @@
 var database = require('../core/database')
 var connection = database.getConnection()
 
-var { ContactNotFound, ContactAlreadyExists } = require('../core/errors')
+var {
+  ContactNotFoundError,
+  ContactAlreadyExistsError,
+} = require('../core/errors')
 
 const fetchAllContacts = () => {
   return connection.query('SELECT * FROM contact WHERE deleted_at IS NULL')
@@ -9,10 +12,16 @@ const fetchAllContacts = () => {
 
 const createContact = (name, number) => {
   return connection
-    .query(
-      'INSERT INTO contact (name, phone_number, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
-      [name, number],
-    )
+    .query('SELECT id FROM contact WHERE phone_number=?', [number])
+    .then((results) => {
+      if (results.length !== 0) {
+        throw new ContactAlreadyExistsError()
+      }
+      return connection.query(
+        'INSERT INTO contact (name, phone_number, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
+        [name, number],
+      )
+    })
     .then((results) => {
       return connection.query('SELECT * FROM contact WHERE id = ?', [
         results.insertId,
@@ -26,7 +35,7 @@ const deleteContact = (id) => {
     .then((results) => {
       const contact = results[0]
       if (!contact) {
-        throw new ContactNotFound()
+        throw new ContactNotFoundError()
       }
       // Delete the contact
       return connection.query(

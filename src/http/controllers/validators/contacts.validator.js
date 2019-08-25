@@ -1,18 +1,32 @@
 const { body, param } = require('express-validator')
+const { validationError } = require('../../../core/utils')
 
-exports.validate = function validate(method) {
+exports.validate = (method) => {
   switch (method) {
     case 'fetch': {
-      return [param('id', 'id must be an int').isInt()]
+      return [
+        param('id', validationError('id', 'id is required')).exists(),
+        param('id', validationError('id', 'id must be an integer')).isInt(),
+      ]
     }
     case 'create': {
       return [
-        body('name', 'name does not exist').isString(),
-        body('phone_number', 'phone_number does not exist').isString(),
+        body('name', validationError('name', 'Name is required')).isString(),
+        body(
+          'phone_number',
+          validationError('phone_number', 'Phone number is required'),
+        ).isString(),
+        body(
+          'phone_number',
+          validationError('phone_number', 'Phone number is not valid'),
+        ).isMobilePhone(),
       ]
     }
     case 'remove': {
-      return [param('id', 'id must be a int').isInt()]
+      return [
+        param('id', validationError('id', 'id is required')).exists(),
+        param('id', validationError('id', 'id must be an integer')).isInt(),
+      ]
     }
     default: {
       return () => true

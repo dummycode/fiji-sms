@@ -18,6 +18,9 @@ const baseErrorResponse = (res, code, message, errors = []) => {
 const badRequestResponse = (res, message = 'invalid request', errors = []) =>
   baseErrorResponse(res, 400, message, errors)
 
+const unauthorizedResponse = (res, message = 'unauthorized') =>
+  baseErrorResponse(res, 401, message)
+
 const notFoundResponse = (res, message = 'not found') =>
   baseErrorResponse(res, 404, message)
 
@@ -77,4 +80,5 @@ module.exports = {
   itemCreatedResponse,
   badRequestResponse,
   itemDeletedResponse,
+  unauthorizedResponse,
 }

@@ -1,6 +1,6 @@
 const { body, param } = require('express-validator')
 
-exports.validate = function validate(method) {
+exports.validate = (method) => {
   switch (method) {
     case 'fetch': {
       return [param('id', 'id must be an int').isInt()]

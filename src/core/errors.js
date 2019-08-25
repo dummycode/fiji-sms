@@ -1,8 +1,14 @@
 /**
  * Contact errors
  */
-exports.ContactNotFound = class ContactNotFound extends Error {}
-exports.ContactAlreadyExists = class ContactAlreadyExists extends Error {}
+exports.ContactNotFoundError = class ContactNotFoundError extends Error {}
+exports.ContactAlreadyExistsError = class ContactAlreadyExistsError extends Error {}
+
+/**
+ * User errors
+ */
+exports.UserNotFoundError = class UserNotFoundError extends Error {}
+exports.UserAlreadyExistsError = class UserAlreadyExistsError extends Error {}
 
 /**
  * Validation errors

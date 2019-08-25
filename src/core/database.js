@@ -9,7 +9,7 @@ class Database {
       {
         ...config.get('database'),
       },
-      function(err) {
+      (err) => {
         if (err) {
           console.log('yikes, database is not operating')
         }

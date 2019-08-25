@@ -22,7 +22,6 @@ const sendMassMessage = (tos, body) => {
   )
 }
 
-// TODO should export helper functions
 module.exports = {
   sendMessage,
   sendMassMessage,

@@ -2,7 +2,10 @@ var responder = require('../../core/responder')
 var contactsManager = require('../../managers/contacts.manager')
 var { validationResult } = require('express-validator')
 
-var { ContactNotFound, ContactAlreadyExists } = require('../../core/errors')
+var {
+  ContactNotFoundError,
+  ContactAlreadyExistsError,
+} = require('../../core/errors')
 
 const index = (req, res) => {
   contactsManager
@@ -27,7 +30,7 @@ const create = (req, res) => {
   if (validationResult(req).errors.length !== 0) {
     responder.badRequestResponse(
       res,
-      'invalid parameters',
+      'Invalid parameters',
       validationResult(req).errors.map((error) => {
         return error.msg
       }),
@@ -39,13 +42,13 @@ const create = (req, res) => {
     .createContact(req.body.name, req.body.phone_number)
     .then((results) => {
       responder.itemCreatedResponse(res, results[0], {
-        message: 'contact created',
+        message: 'Contact created',
       })
     })
     .catch((err) => {
       switch (err.constructor) {
-        case ContactAlreadyExists:
-          responder.ohShitResponse(res, 'contact already exists')
+        case ContactAlreadyExistsError:
+          responder.badRequestResponse(res, 'Contact already exists')
           break
         default:
           console.log(err)
@@ -77,7 +80,7 @@ const remove = (req, res) => {
     })
     .catch((err) => {
       switch (err.constructor) {
-        case ContactNotFound:
+        case ContactNotFoundError:
           responder.notFoundResponse(res, 'contact not found')
           break
         default:
