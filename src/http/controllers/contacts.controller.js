@@ -48,7 +48,10 @@ const create = (req, res) => {
     .catch((err) => {
       switch (err.constructor) {
         case ContactAlreadyExistsError:
-          responder.badRequestResponse(res, 'Contact already exists')
+          responder.badRequestResponse(
+            res,
+            'Contact with phone number already exists',
+          )
           break
         default:
           console.log(err)
