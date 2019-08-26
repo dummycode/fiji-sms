@@ -2,7 +2,15 @@ var { validationResult } = require('express-validator')
 
 var responder = require('../../core/responder')
 
-var { UserNotFoundError } = require('../../core/errors')
+var {
+  UserNotFoundError,
+  InvalidPasswordError,
+  UserAlreadyExistsError,
+} = require('../../core/errors')
+
+var userManager = require('../../managers/users.manager')
+
+var userGoggles = require('./goggles/user.goggles')
 
 const index = (req, res) => {
   responder.successResponse(res, { message: 'users index page' })
@@ -20,16 +28,13 @@ const whoami = (req, res) => {
     )
     return
   }
-
-  return connection
-    .query('SELECT * FROM user WHERE id = ? AND deleted_at IS NULL', [
-      req.body.user_id,
-    ])
+  return userManager
+    .fetchUser(req.body.user.id)
     .then((results) => {
       if (results.length === 0) {
         throw new UserNotFoundError()
       }
-      return responder.successResponse(res, userGoggles(user))
+      return responder.successResponse(res, userGoggles(results[0]))
     })
     .catch((err) => {
       switch (err.constructor) {
@@ -37,6 +42,7 @@ const whoami = (req, res) => {
           responder.badRequestResponse(res, 'Invalid parameters')
           return
         default:
+          console.log(err)
           responder.ohShitResponse(res, err)
       }
     })
@@ -53,7 +59,23 @@ const register = (req, res) => {
     )
     return
   }
-  responder.successResponse(req, 'register')
+
+  userManager
+    .createUser(req.body.username, req.body.password, req.body.email)
+    .then((results) => {
+      const user = results[0]
+      responder.itemCreatedResponse(res, userGoggles(user), 'User created')
+    })
+    .catch((err) => {
+      switch (err.constructor) {
+        case UserAlreadyExistsError:
+          responder.badRequestResponse(res, 'User already exists')
+          return
+        default:
+          console.log(err)
+          responder.ohShitResponse(res, 'Unknown error occurred')
+      }
+    })
 }
 
 const login = (req, res) => {
@@ -69,7 +91,23 @@ const login = (req, res) => {
     return
   }
 
-  responder.successResponse(req, 'login')
+  userManager
+    .login(req.body.username, req.body.password)
+    .then((token) => {
+      console.log(token)
+      responder.successResponse(res, { token }, 'Logged in')
+    })
+    .catch((err) => {
+      switch (err.constructor) {
+        case UserNotFoundError:
+        case InvalidPasswordError:
+          responder.unauthorizedResponse(res, 'invalid login')
+          return
+        default:
+          console.log(err)
+          responder.ohShitResponse(res, 'unknown error occurred')
+      }
+    })
 }
 
 module.exports = {

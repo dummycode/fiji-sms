@@ -9,6 +9,7 @@ exports.ContactAlreadyExistsError = class ContactAlreadyExistsError extends Erro
  */
 exports.UserNotFoundError = class UserNotFoundError extends Error {}
 exports.UserAlreadyExistsError = class UserAlreadyExistsError extends Error {}
+exports.InvalidPasswordError = class InvalidPasswordError extends Error {}
 
 /**
  * Validation errors

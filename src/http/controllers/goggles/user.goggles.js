@@ -1,4 +1,4 @@
-var abstractGoggles = require('abstract.goggles')
+var abstractGoggles = require('./abstract.goggles')
 
 module.exports = (user) => {
   const filter = ['id', 'username', 'email', 'created_at']

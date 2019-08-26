@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
 
   jwt.verify(token, config.get('auth.secret'), (err, decoded) => {
     if (err) {
-      return responder.unauthorizedResponse(res, 'failed to authenticate token')
+      return responder.unauthorizedResponse(res, 'Failed to authenticate token')
     }
     // otherwise, good to go
     connection
@@ -27,7 +27,7 @@ module.exports = (req, res, next) => {
           throw new UserNotFoundError()
         }
         // set user in request payload
-        req.body.user = user
+        req.body.user = results[0]
         return next()
       })
       .catch((err) => {
@@ -35,6 +35,7 @@ module.exports = (req, res, next) => {
           case UserNotFoundError:
             return responder.badRequestResponse(res, 'User not found')
           default:
+            console.log(err)
             return responder.ohShitResponse(res, 'Unknown error occurred')
         }
       })
