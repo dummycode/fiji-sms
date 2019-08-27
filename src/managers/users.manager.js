@@ -8,6 +8,7 @@ var {
   UserAlreadyExistsError,
   UserNotFoundError,
   EncryptionFailedError,
+  InvalidPasswordError,
 } = require('../core/errors')
 
 const fetchUser = (id) => {
@@ -86,7 +87,13 @@ const login = (username, password) => {
           return token
         })
         .catch((err) => {
-          throw new EncryptionFailedError()
+          switch (err.constructor) {
+            case InvalidPasswordError:
+              throw new InvalidPasswordError()
+              return
+            default:
+              throw new EncryptionFailedError()
+          }
         })
     })
 }

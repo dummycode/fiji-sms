@@ -94,18 +94,17 @@ const login = (req, res) => {
   userManager
     .login(req.body.username, req.body.password)
     .then((token) => {
-      console.log(token)
       responder.successResponse(res, { token }, 'Logged in')
     })
     .catch((err) => {
       switch (err.constructor) {
         case UserNotFoundError:
         case InvalidPasswordError:
-          responder.unauthorizedResponse(res, 'invalid login')
+          responder.unauthorizedResponse(res, 'Invalid login')
           return
         default:
           console.log(err)
-          responder.ohShitResponse(res, 'unknown error occurred')
+          responder.ohShitResponse(res, 'Unknown error occurred')
       }
     })
 }
