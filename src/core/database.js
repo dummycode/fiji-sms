@@ -5,7 +5,7 @@ var connection
 
 class Database {
   constructor() {
-    this.connection = mysql.createConnection(
+    this.connection = mysql.createPool(
       {
         ...config.get('database'),
       },
