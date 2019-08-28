@@ -12,7 +12,10 @@ const fetchAllContacts = () => {
 
 const createContact = (name, number) => {
   return connection
-    .query('SELECT id FROM contact WHERE phone_number=?', [number])
+    .query(
+      'SELECT id FROM contact WHERE phone_number=? AND deleted_at IS NULL',
+      [number],
+    )
     .then((results) => {
       if (results.length !== 0) {
         throw new ContactAlreadyExistsError()
