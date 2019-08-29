@@ -12,6 +12,11 @@ exports.UserAlreadyExistsError = class UserAlreadyExistsError extends Error {}
 exports.InvalidPasswordError = class InvalidPasswordError extends Error {}
 
 /**
+ * Message errors
+ */
+exports.MessageNotFoundError = class MessageNotFoundError extends Error {}
+
+/**
  * Validation errors
  */
 exports.ValidationFailedError = class ValidationFailedError extends Error {

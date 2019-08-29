@@ -1,8 +1,10 @@
 {
-  "app_name": "SMS",
-  "app_desc": "Generic texting system",
-  "api": {
-    "version": "0.0.1"
+  "app": {
+    "name": "SMS",
+    "desc": "Generic texting system",
+    "api": {
+      "version": "0.0.1"
+    }
   },
   "auth": {
     "secret": "mysecretkey",

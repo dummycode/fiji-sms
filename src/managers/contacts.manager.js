@@ -36,8 +36,7 @@ const deleteContact = (id) => {
   return connection
     .query('SELECT * FROM contact WHERE id=? AND deleted_at IS NULL', [id])
     .then((results) => {
-      const contact = results[0]
-      if (!contact) {
+      if (results.length === 0) {
         throw new ContactNotFoundError()
       }
       // Delete the contact

@@ -2,6 +2,8 @@ var responder = require('../../core/responder')
 var contactsManager = require('../../managers/contacts.manager')
 var { validationResult } = require('express-validator')
 
+var contactGoggles = require('./goggles/contact.goggles')
+
 var {
   ContactNotFoundError,
   ContactAlreadyExistsError,
@@ -11,7 +13,7 @@ const index = (req, res) => {
   contactsManager
     .fetchAllContacts()
     .then((results) => {
-      responder.successResponse(res, results)
+      responder.successResponse(res, results.map(contactGoggles))
     })
     .catch((err) => {
       switch (err.constructor) {
@@ -41,7 +43,7 @@ const create = (req, res) => {
   contactsManager
     .createContact(req.body.name, req.body.phone_number)
     .then((results) => {
-      responder.itemCreatedResponse(res, results[0], {
+      responder.itemCreatedResponse(res, contactGoggles(results[0]), {
         message: 'Contact created',
       })
     })
