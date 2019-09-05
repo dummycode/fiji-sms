@@ -38,7 +38,7 @@ const send = (req, res) => {
       .sendMassMessage(phoneNumbers, req.body.message)
       .then((message) =>
         messagesManager
-          .createMessage(req.body.message, req.body.user.id)
+          .createMessage(req.body.message, req.body.user.user_id)
           .then((results) => {
             responder.successResponse(
               res,
@@ -47,7 +47,10 @@ const send = (req, res) => {
             )
           }),
       )
-      .catch((err) => responder.ohShitResponse(res, err))
+      .catch((err) => {
+        console.log(err)
+        responder.ohShitResponse(res, err)
+      })
   })
 }
 

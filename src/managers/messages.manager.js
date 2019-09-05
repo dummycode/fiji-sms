@@ -4,7 +4,9 @@ var connection = database.getConnection()
 var { MessageNotFoundError } = require('../core/errors')
 
 const fetchAllMessages = () => {
-  return connection.query('SELECT * FROM message WHERE deleted_at IS NULL')
+  return connection.query(
+    'SELECT * FROM (message LEFT JOIN user ON user_id = created_by) WHERE message.deleted_at IS NULL',
+  )
 }
 
 const createMessage = (content, creator) => {
@@ -14,7 +16,7 @@ const createMessage = (content, creator) => {
       [content, creator],
     )
     .then((results) => {
-      return connection.query('SELECT * FROM message WHERE id = ?', [
+      return connection.query('SELECT * FROM message WHERE message_id = ?', [
         results.insertId,
       ])
     })
@@ -22,14 +24,16 @@ const createMessage = (content, creator) => {
 
 const deleteMesasge = (id) => {
   return connection
-    .query('SELECT * FROM message WHERE id=? AND deleted_at IS NULL', [id])
+    .query('SELECT * FROM message WHERE message_id=? AND deleted_at IS NULL', [
+      id,
+    ])
     .then((results) => {
       if (results.length === 0) {
         throw new MessageNotFoundError()
       }
       // Delete the message
       return connection.query(
-        'UPDATE message SET deleted_at = CURRENT_TIMESTAMP(3) WHERE id = ?',
+        'UPDATE message SET deleted_at = CURRENT_TIMESTAMP(3) WHERE message_id = ?',
         [id],
       )
     })

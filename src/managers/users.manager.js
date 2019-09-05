@@ -13,14 +13,14 @@ var {
 
 const fetchUser = (id) => {
   return connection.query(
-    'SELECT * FROM user WHERE id = ? AND deleted_at IS NULL',
+    'SELECT * FROM user WHERE user_id = ? AND deleted_at IS NULL',
     [id],
   )
 }
 
 const createUser = (username, password, email) => {
   return connection
-    .query('SELECT id FROM user WHERE username=? AND deleted_at IS NULL', [
+    .query('SELECT user_id FROM user WHERE username=? AND deleted_at IS NULL', [
       username,
     ])
     .then((results) => {
@@ -43,7 +43,7 @@ const createUser = (username, password, email) => {
         })
     })
     .then((results) => {
-      return connection.query('SELECT * FROM user WHERE id = ?', [
+      return connection.query('SELECT * FROM user WHERE user_id = ?', [
         results.insertId,
       ])
     })
@@ -51,7 +51,7 @@ const createUser = (username, password, email) => {
 
 const deleteUser = (id) => {
   return connection
-    .query('SELECT * FROM user WHERE id=? AND deleted_at IS NULL', [id])
+    .query('SELECT * FROM user WHERE user_id=? AND deleted_at IS NULL', [id])
     .then((results) => {
       const user = results[0]
       if (!user) {
@@ -59,7 +59,7 @@ const deleteUser = (id) => {
       }
       // Delete the contact
       return connection.query(
-        'UPDATE user SET deleted_at = CURRENT_TIMESTAMP(3) WHERE id = ?',
+        'UPDATE user SET deleted_at = CURRENT_TIMESTAMP(3) WHERE user_id = ?',
         [id],
       )
     })
@@ -81,9 +81,13 @@ const login = (username, password) => {
           if (!valid) {
             throw new InvalidPasswordError()
           }
-          const token = jwt.sign({ id: user.id }, config.get('auth.secret'), {
-            expiresIn: config.get('auth.timeout'),
-          })
+          const token = jwt.sign(
+            { id: user.user_id },
+            config.get('auth.secret'),
+            {
+              expiresIn: config.get('auth.timeout'),
+            },
+          )
           return token
         })
         .catch((err) => {

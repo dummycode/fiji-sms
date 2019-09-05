@@ -29,7 +29,7 @@ const whoami = (req, res) => {
     return
   }
   return userManager
-    .fetchUser(req.body.user.id)
+    .fetchUser(req.body.user.user_id)
     .then((results) => {
       if (results.length === 0) {
         throw new UserNotFoundError()

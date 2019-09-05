@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
     }
     // otherwise, good to go
     connection
-      .query('SELECT * FROM user WHERE id = ?', [decoded.id])
+      .query('SELECT * FROM user WHERE user_id = ?', [decoded.id])
       .then((results) => {
         if (results.length === 0) {
           throw new UserNotFoundError()

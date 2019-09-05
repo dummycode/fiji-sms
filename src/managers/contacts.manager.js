@@ -13,7 +13,7 @@ const fetchAllContacts = () => {
 const createContact = (name, number) => {
   return connection
     .query(
-      'SELECT id FROM contact WHERE phone_number=? AND deleted_at IS NULL',
+      'SELECT contact_id FROM contact WHERE phone_number=? AND deleted_at IS NULL',
       [number],
     )
     .then((results) => {
@@ -26,7 +26,7 @@ const createContact = (name, number) => {
       )
     })
     .then((results) => {
-      return connection.query('SELECT * FROM contact WHERE id = ?', [
+      return connection.query('SELECT * FROM contact WHERE contact_id = ?', [
         results.insertId,
       ])
     })
@@ -34,14 +34,16 @@ const createContact = (name, number) => {
 
 const deleteContact = (id) => {
   return connection
-    .query('SELECT * FROM contact WHERE id=? AND deleted_at IS NULL', [id])
+    .query('SELECT * FROM contact WHERE contact_id=? AND deleted_at IS NULL', [
+      id,
+    ])
     .then((results) => {
       if (results.length === 0) {
         throw new ContactNotFoundError()
       }
       // Delete the contact
       return connection.query(
-        'UPDATE contact SET deleted_at = CURRENT_TIMESTAMP(3) WHERE id = ?',
+        'UPDATE contact SET deleted_at = CURRENT_TIMESTAMP(3) WHERE contact_id = ?',
         [id],
       )
     })
