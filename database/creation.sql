@@ -4,7 +4,7 @@ CREATE TABLE contact (
   `phone_number` VARCHAR(256) NOT NULL,
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (contact_id)
 );
 
 CREATE TABLE user (
@@ -14,7 +14,7 @@ CREATE TABLE user (
   `email` VARCHAR(256),
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (user_id)
 );
 
 CREATE TABLE message (
@@ -23,6 +23,6 @@ CREATE TABLE message (
   `created_by` INT NOT NULL,
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
-  CONSTRAINT fk_creator FOREIGN KEY (created_by) REFERENCES user(id) ON UPDATE CASCADE,
-	PRIMARY KEY (id)
+  CONSTRAINT fk_creator FOREIGN KEY (created_by) REFERENCES user(user_id) ON UPDATE CASCADE,
+	PRIMARY KEY (message_id)
 );
