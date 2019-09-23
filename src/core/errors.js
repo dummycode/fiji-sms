@@ -17,6 +17,11 @@ exports.InvalidPasswordError = class InvalidPasswordError extends Error {}
 exports.MessageNotFoundError = class MessageNotFoundError extends Error {}
 
 /**
+ * Group errors
+ */
+exports.GroupNotFoundError = class GroupNotFoundError extends Error {}
+
+/**
  * Validation errors
  */
 exports.ValidationFailedError = class ValidationFailedError extends Error {

@@ -23,6 +23,25 @@ CREATE TABLE message (
   `created_by` INT NOT NULL,
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
-  CONSTRAINT fk_creator FOREIGN KEY (created_by) REFERENCES user(user_id) ON UPDATE CASCADE,
+	CONSTRAINT fk_creator FOREIGN KEY (created_by) REFERENCES user(user_id) ON UPDATE CASCADE,
 	PRIMARY KEY (message_id)
+);
+
+CREATE TABLE contact_group (
+	`contact_group_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(256) NOT NULL,
+	`created_at` DATETIME(3) NOT NULL,
+	`deleted_at` DATETIME(3) DEFAULT NULL,
+	PRIMARY KEY (contact_group_id)
+);
+
+CREATE TABLE group_membership (
+	`group_membership_id` INT NOT NULL AUTO_INCREMENT,
+	`contact_group_id` INT NOT NULL,
+	`contact_id` INT NOT NULL,
+	`created_at` DATETIME(3) NOT NULL,
+	`deleted_at` DATETIME(3) DEFAULT NULL,
+	CONSTRAINT fk_contact_group FOREIGN KEY (contact_group_id) REFERENCES contact_group(contact_group_id) ON UPDATE CASCADE,
+	CONSTRAINT fk_contact FOREIGN KEY (contact_id) REFERENCES contact(contact_id) ON UPDATE CASCADE,
+	PRIMARY KEY (group_membership_id)
 );

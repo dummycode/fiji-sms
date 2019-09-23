@@ -38,6 +38,7 @@ const apiRoutes = {
   messages: 'messages',
   users: 'users',
   contacts: 'contacts',
+  groups: 'groups',
 }
 for (const [key, route] of Object.entries(apiRoutes)) {
   app.use(`/api/${route}`, require(`./src/http/routes/api/${key}`))

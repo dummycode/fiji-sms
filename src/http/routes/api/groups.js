@@ -1,9 +1,9 @@
 var express = require('express')
 var router = express.Router()
 
-var controller = require('../../controllers/contacts.controller')
+var controller = require('../../controllers/groups.controller')
 
-var { validate } = require('../../controllers/validators/contacts.validator')
+var { validate } = require('../../controllers/validators/groups.validator')
 
 var authenticate = require('../../middleware/auth.middleware')
 
