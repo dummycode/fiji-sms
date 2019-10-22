@@ -33,7 +33,7 @@ const deleteGroup = (id) => {
       if (results.length === 0) {
         throw new GroupNotFoundError()
       }
-      // Delete the contact
+      // Delete the group
       return connection.query(
         'UPDATE contact_group SET deleted_at = CURRENT_TIMESTAMP(3) WHERE contact_group_id = ?',
         [id],
