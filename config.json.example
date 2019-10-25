@@ -19,6 +19,7 @@
   },
   "twilio": {
     "accountSid": "myAccountSid",
-    "authToken": "myAuthToken"
+    "authToken": "myAuthToken",
+    "phoneNumber": "+12073053886"
   }
 }

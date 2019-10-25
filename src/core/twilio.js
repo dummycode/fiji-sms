@@ -9,7 +9,7 @@ const client = require('twilio')(
 const sendMessage = (to, body) => {
   return client.messages.create({
     body,
-    from: '+12073053886',
+    from: config.get('twilio.phoneNumber'),
     to,
   })
 }
