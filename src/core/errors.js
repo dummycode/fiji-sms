@@ -20,6 +20,7 @@ exports.MessageNotFoundError = class MessageNotFoundError extends Error {}
  * Group errors
  */
 exports.GroupNotFoundError = class GroupNotFoundError extends Error {}
+exports.GroupMembershipNotFoundError = class GroupMembershipNotFoundError extends Error {}
 
 /**
  * Validation errors
