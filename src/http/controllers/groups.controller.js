@@ -86,10 +86,7 @@ const remove = (req, res) => {
     .deleteGroup(req.params.id)
     .then((results) => {
       const contact = results[0]
-      responder.itemDeletedResponse(res, {
-        message: 'Successfully deleted group',
-        data: contact,
-      })
+      responder.itemDeletedResponse(res, 'Successfully deleted group')
     })
     .catch((err) => {
       switch (err.constructor) {
@@ -154,10 +151,7 @@ const removeMember = (req, res) => {
     .removeMember(req.params.id)
     .then((results) => {
       const groupMembership = results[0]
-      responder.itemDeletedResponse(res, {
-        message: 'Group membership deleted',
-        data: groupMembership,
-      })
+      responder.itemDeletedResponse(res, 'Group membership deleted')
     })
     .catch((err) => {
       switch (err.constructor) {

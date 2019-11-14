@@ -78,10 +78,7 @@ const remove = (req, res) => {
     .deleteContact(req.params.id)
     .then((results) => {
       const contact = results[0]
-      responder.itemDeletedResponse(res, {
-        message: 'successfully deleted contact',
-        data: contact,
-      })
+      responder.itemDeletedResponse(res, 'successfully deleted contact')
     })
     .catch((err) => {
       switch (err.constructor) {

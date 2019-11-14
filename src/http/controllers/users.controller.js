@@ -109,9 +109,40 @@ const login = (req, res) => {
     })
 }
 
+const remove = (req, res) => {
+  if (validationResult(req).errors.length !== 0) {
+    responder.badRequestResponse(
+      res,
+      'invalid parameters',
+      validationResult(req).errors.map((error) => {
+        return error.msg
+      }),
+    )
+    return
+  }
+
+  userManager
+    .deleteUser(req.params.id)
+    .then((results) => {
+      const user = results[0]
+      responder.itemDeletedResponse(res, 'Successfully deleted user')
+    })
+    .catch((err) => {
+      switch (err.constructor) {
+        case UserNotFoundError:
+          responder.notFoundResponse(res, 'user not found')
+          break
+        default:
+          console.log(err)
+          responder.ohShitResponse(res, err)
+      }
+    })
+}
+
 module.exports = {
   index,
   register,
   login,
   whoami,
+  remove,
 }

@@ -61,7 +61,7 @@ itemUpdatedResponse = (res, data = [], message = '') => {
   })
 }
 
-itemDeletedResponse = (res, data = [], message = '') => {
+itemDeletedResponse = (res, message = '', data = []) => {
   const content = {
     code: 204,
     message,

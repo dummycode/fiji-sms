@@ -53,11 +53,10 @@ const deleteUser = (id) => {
   return connection
     .query('SELECT * FROM user WHERE user_id=? AND deleted_at IS NULL', [id])
     .then((results) => {
-      const user = results[0]
-      if (!user) {
+      if (results.length === 0) {
         throw new UserNotFoundError()
       }
-      // Delete the contact
+      // Delete the user
       return connection.query(
         'UPDATE user SET deleted_at = CURRENT_TIMESTAMP(3) WHERE user_id = ?',
         [id],
@@ -105,6 +104,6 @@ const login = (username, password) => {
 module.exports = {
   fetchUser,
   createUser,
-  deleteUser,
   login,
+  deleteUser,
 }

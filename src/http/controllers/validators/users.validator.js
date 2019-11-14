@@ -29,6 +29,12 @@ exports.validate = (method) => {
         ).isString(),
       ]
     }
+    case 'remove': {
+      return [
+        param('id', validationError('id', 'id is required')).exists(),
+        param('id', validationError('id', 'id must be an integer')).isInt(),
+      ]
+    }
     default: {
       return () => true
     }
