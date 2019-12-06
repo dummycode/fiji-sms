@@ -5,7 +5,7 @@ var controller = require('../../controllers/contacts.controller')
 
 var { validate } = require('../../controllers/validators/contacts.validator')
 
-var authenticate = require('../../middleware/auth.middleware')
+var { authenticate } = require('../../middleware/auth.middleware')
 
 router.get('/', [authenticate], controller.index)
 router.get('/:id', [authenticate], controller.fetch)

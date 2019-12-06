@@ -9,7 +9,7 @@ var connection = database.getConnection()
 
 const { UserNotFoundError } = require('../../core/errors')
 
-module.exports = (req, res, next) => {
+exports.authenticate = (req, res, next) => {
   const token = req.headers['x-access-token']
   if (!token) {
     return responder.unauthorizedResponse(res, 'No token provided')
@@ -41,3 +41,12 @@ module.exports = (req, res, next) => {
       })
   })
 }
+
+exports.isAdmin = (req, res, next) => {
+  if (req.body.user.is_admin) {
+    return next()
+  } else {
+    return responder.unauthorizedResponse(res, 'Permission denied')
+  }
+}
+

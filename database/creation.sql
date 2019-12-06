@@ -12,6 +12,7 @@ CREATE TABLE user (
   `username` VARCHAR(256) NOT NULL,
   `password` VARCHAR(256) NOT NULL,
   `email` VARCHAR(256),
+  `is_admin` BOOLEAN NOT NULL,
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
 	PRIMARY KEY (user_id)

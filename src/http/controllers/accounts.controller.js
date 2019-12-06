@@ -1,45 +1,50 @@
-var responder = require('../../core/responder')
-var groupsManager = require('../../managers/groups.manager')
 var { validationResult } = require('express-validator')
 
-var groupGoggles = require('./goggles/group.goggles')
-var groupMembershipGoggles = require('./goggles/group_membership.goggles')
+var responder = require('../../core/responder')
 
-var { GroupNotFoundError } = require('../../core/errors')
+var { AccountNotFoundError } = require('../../core/errors')
+
+var accountManager = require('../../managers/accounts.manager')
+
+var accountGoggles = require('./goggles/account.goggles')
 
 const index = (req, res) => {
-  groupsManager
-    .fetchAllGroups()
-    .then((results) => {
-      responder.successResponse(res, results.map(groupGoggles))
-    })
-    .catch((err) => {
-      switch (err.constructor) {
-        default:
-          console.log(err)
-          responder.ohShitResponse(res, err)
-      }
-    })
+  responder.successResponse(res, { message: 'accounts index page' })
 }
 
+// const index = (req, res) => {
+//   accountsManager
+//     .fetchAllAccounts()
+//     .then((results) => {
+//       responder.successResponse(res, results.map(accountGoggles))
+//     })
+//     .catch((err) => {
+//       switch (err.constructor) {
+//         default:
+//           console.log(err)
+//           responder.ohShitResponse(res, err)
+//       }
+//     })
+// }
+
 const fetch = (req, res) => {
-  groupsManager
+  accountsManager
     .fetch(req.params.id)
     .then((results) => {
-      const group = results[0]
-      responder.successResponse(res, groupGoggles(group))
+      const account = results[0]
+      responder.successResponse(res, accountGoggles(account))
     })
     .catch((err) => {
       switch (err.constructor) {
-        case GroupNotFoundError:
-          responder.notFoundResponse(res, 'Group not found')
+        case AccountNotFoundError:
+          responder.notFoundResponse(res, 'Account not found')
           break
         default:
           console.log(err)
           responder.ohShitResponse(res)
       }
     })
-  responder.successResponse(res, { message: 'get group' })
+  responder.successResponse(res, { message: 'get account' })
 }
 
 const create = (req, res) => {
@@ -54,11 +59,11 @@ const create = (req, res) => {
     return
   }
 
-  groupsManager
-    .createGroup(req.body.name)
+  accountsManager
+    .createAccount(req.body.name)
     .then((results) => {
-      responder.itemCreatedResponse(res, groupGoggles(results[0]), {
-        message: 'Group created',
+      responder.itemCreatedResponse(res, accountGoggles(results[0]), {
+        message: 'Account created',
       })
     })
     .catch((err) => {
@@ -82,16 +87,16 @@ const remove = (req, res) => {
     return
   }
 
-  groupsManager
-    .deleteGroup(req.params.id)
+  accountsManager
+    .deleteAccount(req.params.id)
     .then((results) => {
       const contact = results[0]
-      responder.itemDeletedResponse(res, 'Successfully deleted group')
+      responder.itemDeletedResponse(res, 'Successfully deleted account')
     })
     .catch((err) => {
       switch (err.constructor) {
-        case GroupNotFoundError:
-          responder.notFoundResponse(res, 'Group not found')
+        case AccountNotFoundError:
+          responder.notFoundResponse(res, 'Account not found')
           break
         default:
           console.log(err)
@@ -112,21 +117,21 @@ const addMember = (req, res) => {
 
     return
   }
-  groupsManager
+  accountsManager
     .addMember(req.params.id, req.body.contact_id)
     .then((results) => {
-      const groupMembership = results[0]
-      responder.itemCreatedResponse(res, groupMembership, {
+      const accountMembership = results[0]
+      responder.itemCreatedResponse(res, accountMembership, {
         message: 'Member added',
       })
     })
     .catch((err) => {
       switch (err.constructor) {
-        case GroupNotFoundError:
-          responder.badRequestResponse(res, 'Group not found')
+        case AccountNotFoundError:
+          responder.badRequestResponse(res, 'Account not found')
           break
         case ContactNotFoundError:
-          responder.badRequestResponse(res, 'Group not found')
+          responder.badRequestResponse(res, 'Account not found')
           break
         default:
           console.log(err)
@@ -147,16 +152,16 @@ const removeMember = (req, res) => {
     return
   }
 
-  groupsManager
+  accountsManager
     .removeMember(req.params.id)
     .then((results) => {
-      const groupMembership = results[0]
-      responder.itemDeletedResponse(res, 'Group membership deleted')
+      const accountMembership = results[0]
+      responder.itemDeletedResponse(res, 'Account membership deleted')
     })
     .catch((err) => {
       switch (err.constructor) {
-        case GroupMembershipNotFoundError:
-          responder.badRequestResponse(res, 'Group membership not found')
+        case AccountMembershipNotFoundError:
+          responder.badRequestResponse(res, 'Account membership not found')
           break
         default:
           console.log(err)
@@ -171,5 +176,4 @@ module.exports = {
   create,
   remove,
   addMember,
-  removeMember,
 }

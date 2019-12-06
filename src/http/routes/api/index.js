@@ -6,7 +6,7 @@ var { validate } = require('../../controllers/validators/index.validator')
 var controller = require('../../controllers/index.controller')
 var userController = require('../../controllers/users.controller')
 
-var authenticate = require('../../middleware/auth.middleware')
+var { authenticate } = require('../../middleware/auth.middleware')
 
 router.get('/', controller.index)
 router.get('/whoami', authenticate, userController.whoami)
