@@ -7,7 +7,7 @@ var { validate } = require('../../controllers/validators/groups.validator')
 
 var { authenticate } = require('../../middleware/auth.middleware')
 
-router.post('/', [authenticate, validate('create')], controller.addMember)
+router.post('/', [authenticate, validate('addMember')], controller.addMember)
 router.delete(
   '/:id',
   [authenticate, validate('removeMember')],

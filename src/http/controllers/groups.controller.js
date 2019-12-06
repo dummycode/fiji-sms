@@ -5,7 +5,7 @@ var { validationResult } = require('express-validator')
 var groupGoggles = require('./goggles/group.goggles')
 var groupMembershipGoggles = require('./goggles/group_membership.goggles')
 
-var { GroupNotFoundError } = require('../../core/errors')
+var { GroupNotFoundError, ContactNotFoundError } = require('../../core/errors')
 
 const index = (req, res) => {
   groupsManager
@@ -25,8 +25,7 @@ const index = (req, res) => {
 const fetch = (req, res) => {
   groupsManager
     .fetch(req.params.id)
-    .then((results) => {
-      const group = results[0]
+    .then((group) => {
       responder.successResponse(res, groupGoggles(group))
     })
     .catch((err) => {
@@ -39,7 +38,6 @@ const fetch = (req, res) => {
           responder.ohShitResponse(res)
       }
     })
-  responder.successResponse(res, { message: 'get group' })
 }
 
 const create = (req, res) => {
@@ -113,9 +111,8 @@ const addMember = (req, res) => {
     return
   }
   groupsManager
-    .addMember(req.params.id, req.body.contact_id)
-    .then((results) => {
-      const groupMembership = results[0]
+    .addMember(req.body.groupId, req.body.contactId)
+    .then((groupMembership) => {
       responder.itemCreatedResponse(res, groupMembership, {
         message: 'Member added',
       })
@@ -126,7 +123,7 @@ const addMember = (req, res) => {
           responder.badRequestResponse(res, 'Group not found')
           break
         case ContactNotFoundError:
-          responder.badRequestResponse(res, 'Group not found')
+          responder.badRequestResponse(res, 'Contact not found')
           break
         default:
           console.log(err)

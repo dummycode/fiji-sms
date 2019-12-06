@@ -20,12 +20,12 @@ exports.validate = (method) => {
         param('id', validationError('id', 'Id must be an integer')).isInt(),
       ]
     }
-    case 'add': {
+    case 'addMember': {
       return [
-        body('groupId', validationError('id', 'Group id is required')).exists(),
+        body('groupId', validationError('groupId', 'Group id is required')).exists(),
         body(
           'groupId',
-          validationError('id', 'Group id must be an integer'),
+          validationError('groupId', 'Group id must be an integer'),
         ).isInt(),
         body(
           'contactId',

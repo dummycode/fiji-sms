@@ -13,6 +13,17 @@ const fetchAllGroups = () => {
   )
 }
 
+const fetch = (groupId) => {
+  return connection.query(
+    'SELECT * from contact_group WHERE group_id=? AND deleted_at IS NULL', [groupId]
+  ).then((results) => {
+    if (results.length === 0) {
+      throw new GroupNotFoundError()
+    }
+    return results[0]
+  })
+}
+
 const createGroup = (name) => {
   return connection
     .query(
@@ -21,7 +32,7 @@ const createGroup = (name) => {
     )
     .then((results) => {
       return connection.query(
-        'SELECT * FROM contact_group WHERE contact_group_id=?',
+        'SELECT * FROM contact_group WHERE group_id=?',
         [results.insertId],
       )
     })
@@ -30,7 +41,7 @@ const createGroup = (name) => {
 const deleteGroup = (id) => {
   return connection
     .query(
-      'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
+      'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
       [id],
     )
     .then((results) => {
@@ -39,17 +50,17 @@ const deleteGroup = (id) => {
       }
       // Delete the group
       return connection.query(
-        'UPDATE contact_group SET deleted_at=CURRENT_TIMESTAMP(3) WHERE contact_group_id=?',
+        'UPDATE contact_group SET deleted_at=CURRENT_TIMESTAMP(3) WHERE group_id=?',
         [id],
       )
     })
 }
 
-const addMember = (contactGroupId, contactId) => {
+const addMember = (groupId, contactId) => {
   return connection
     .query(
-      'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
-      [contactGroupId],
+      'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
+      [groupId],
     )
     .then((results) => {
       if (results.length === 0) {
@@ -67,8 +78,8 @@ const addMember = (contactGroupId, contactId) => {
       }
 
       return connection.query(
-        'INSERT INTO group_membership (contact_group_id, contact_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
-        [contactGroupId, contactId],
+        'INSERT INTO group_membership (group_id, contact_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
+        [groupId, contactId],
       )
     })
     .then((results) => {
@@ -76,6 +87,8 @@ const addMember = (contactGroupId, contactId) => {
         'SELECT * FROM group_membership WHERE group_membership_id=?',
         [results.insertId],
       )
+    }).then((results) => {
+      return results[0]
     })
 }
 
@@ -99,6 +112,7 @@ const removeMember = (id) => {
 
 module.exports = {
   fetchAllGroups,
+  fetch,
   createGroup,
   deleteGroup,
   addMember,
