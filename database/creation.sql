@@ -1,3 +1,12 @@
+CREATE TABLE account (
+	`account_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(256) NOT NULL,
+	`created_at` DATETIME(3) NOT NULL,
+	`deleted_at` DATETIME(3) DEFAULT NULL,
+	PRIMARY KEY (account_id)
+);
+
+
 CREATE TABLE contact (
 	`contact_id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(256) NOT NULL,
@@ -13,8 +22,10 @@ CREATE TABLE user (
   `password` VARCHAR(256) NOT NULL,
   `email` VARCHAR(256),
   `is_admin` BOOLEAN NOT NULL,
+  `account` INT NOT NULL,
 	`created_at` DATETIME(3) NOT NULL,
 	`deleted_at` DATETIME(3) DEFAULT NULL,
+  CONSTRAINT fk_account FOREIGN KEY (account) REFERENCES account(account_id) ON UPDATE CASCADE,
 	PRIMARY KEY (user_id)
 );
 
