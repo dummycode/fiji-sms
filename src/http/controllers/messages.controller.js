@@ -32,7 +32,16 @@ const send = (req, res) => {
     )
     return
   }
-  contactsManager.fetchAllContacts().then((contacts) => {
+
+  const contacts = () => {
+    if (req.body.groupId) {
+      return contactsManager.fetchContactsForGroup(req.body.groupId)
+    } else {
+      return contactsManager.fetchAllContacts()
+    }
+  }
+
+  contacts().then((contacts) => {
     const phoneNumbers = contacts.map((contact) => contact.phone_number)
     twilio
       .sendMassMessage(phoneNumbers, req.body.message)

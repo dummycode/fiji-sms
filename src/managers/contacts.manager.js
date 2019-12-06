@@ -4,10 +4,15 @@ var connection = database.getConnection()
 var {
   ContactNotFoundError,
   ContactAlreadyExistsError,
+  GroupNotFoundError,
 } = require('../core/errors')
 
 const fetchAllContacts = () => {
   return connection.query('SELECT * FROM contact WHERE deleted_at IS NULL')
+}
+
+const fetchContactsForGroup = (groupId) => {
+  return connection.query('SELECT * FROM (group_membership JOIN contact) WHERE group_id=? AND group_membership.deleted_at IS NULL', [groupId])
 }
 
 const createContact = (name, number) => {
@@ -26,7 +31,7 @@ const createContact = (name, number) => {
       )
     })
     .then((results) => {
-      return connection.query('SELECT * FROM contact WHERE contact_id = ?', [
+      return connection.query('SELECT * FROM contact WHERE contact_id=?', [
         results.insertId,
       ])
     })
@@ -51,6 +56,7 @@ const deleteContact = (id) => {
 
 module.exports = {
   fetchAllContacts,
+  fetchContactsForGroup,
   createContact,
   deleteContact,
 }
