@@ -21,6 +21,8 @@ exports.MessageNotFoundError = class MessageNotFoundError extends Error {}
  */
 exports.GroupNotFoundError = class GroupNotFoundError extends Error {}
 exports.GroupMembershipNotFoundError = class GroupMembershipNotFoundError extends Error {}
+exports.GroupMembershipAlreadyExistsError = class GroupMembershipAlreadyExistsError extends Error {}
+
 
 /**
  * Validation errors

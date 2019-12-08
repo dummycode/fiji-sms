@@ -5,6 +5,7 @@ var {
   GroupNotFoundError,
   ContactNotFoundError,
   GroupMembershipNotFoundError,
+  GroupMembershipAlreadyExistsError,
 } = require('../core/errors')
 
 const fetchAllGroups = () => {
@@ -14,14 +15,17 @@ const fetchAllGroups = () => {
 }
 
 const fetch = (groupId) => {
-  return connection.query(
-    'SELECT * from contact_group WHERE group_id=? AND deleted_at IS NULL', [groupId]
-  ).then((results) => {
-    if (results.length === 0) {
-      throw new GroupNotFoundError()
-    }
-    return results[0]
-  })
+  return connection
+    .query(
+      'SELECT * from contact_group WHERE group_id=? AND deleted_at IS NULL',
+      [groupId],
+    )
+    .then((results) => {
+      if (results.length === 0) {
+        throw new GroupNotFoundError()
+      }
+      return results[0]
+    })
 }
 
 const createGroup = (name) => {
@@ -31,10 +35,9 @@ const createGroup = (name) => {
       [name],
     )
     .then((results) => {
-      return connection.query(
-        'SELECT * FROM contact_group WHERE group_id=?',
-        [results.insertId],
-      )
+      return connection.query('SELECT * FROM contact_group WHERE group_id=?', [
+        results.insertId,
+      ])
     })
 }
 
@@ -59,9 +62,18 @@ const deleteGroup = (id) => {
 const addMember = (groupId, contactId) => {
   return connection
     .query(
-      'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
-      [groupId],
+      'SELECT * FROM group_membership WHERE group_id=? AND contact_id=? AND deleted_at IS NULL',
+      [groupId, contactId],
     )
+    .then((results) => {
+      if (results.length !== 0) {
+        throw new GroupMembershipAlreadyExistsError()
+      }
+      return connection.query(
+        'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
+        [groupId],
+      )
+    })
     .then((results) => {
       if (results.length === 0) {
         throw new GroupNotFoundError()
@@ -87,7 +99,8 @@ const addMember = (groupId, contactId) => {
         'SELECT * FROM group_membership WHERE group_membership_id=?',
         [results.insertId],
       )
-    }).then((results) => {
+    })
+    .then((results) => {
       return results[0]
     })
 }
