@@ -5,7 +5,7 @@ var { MessageNotFoundError } = require('../core/errors')
 
 const fetchAllMessages = () => {
   return connection.query(
-    'SELECT * FROM (message LEFT JOIN user ON user_id = created_by) WHERE message.deleted_at IS NULL',
+    'SELECT * FROM (message LEFT JOIN user ON user_id = created_by) WHERE message.deleted_at IS NULL ORDER BY message.created_at DESC',
   )
 }
 
