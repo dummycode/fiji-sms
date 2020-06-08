@@ -1,9 +1,10 @@
 # SMS
 _Better name coming..._
 
+## About
 A Node.js app to send mass text messages via Twilio.
 
-## Local Development
+## Development
 ### Requirements
 - Node.js (v10 recommended)
 - Nodemon
