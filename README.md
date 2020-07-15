@@ -16,3 +16,8 @@ A Node.js app to send mass text messages via Twilio.
 - Run `nodemon` to start the server
 - Visit [localhost:3000](localhost:3000) to verify that the server is running
 
+### Contributing
+Contributions to this project are welcome!
+- Create a new branch with name `<username or first name>/feature-description`.
+- Create a PR and fill in the relevant information then tag me, @dummycode, for a review
+- I will review, merge, and deploy your changes
