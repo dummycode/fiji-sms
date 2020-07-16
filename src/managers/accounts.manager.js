@@ -2,105 +2,49 @@ var database = require('../core/database')
 var connection = database.getConnection()
 
 var {
-  GroupNotFoundError,
-  ContactNotFoundError,
-  GroupMembershipNotFoundError,
+  AccountNotFoundError,
 } = require('../core/errors')
 
-const fetchAllGroups = () => {
+const fetchAllAccounts = () => {
   return connection.query(
-    'SELECT * FROM contact_group WHERE deleted_at IS NULL',
+    'SELECT * FROM account WHERE deleted_at IS NULL',
   )
 }
 
-const createGroup = (name) => {
+const createAccount = (name) => {
   return connection
     .query(
-      'INSERT INTO contact_group (name, created_at) VALUES (?, CURRENT_TIMESTAMP(3))',
+      'INSERT INTO account (name, created_at) VALUES (?, CURRENT_TIMESTAMP(3))',
       [name],
     )
     .then((results) => {
       return connection.query(
-        'SELECT * FROM contact_group WHERE contact_group_id=?',
+        'SELECT * FROM account WHERE account_id=?',
         [results.insertId],
       )
     })
 }
 
-const deleteGroup = (id) => {
+const deleteAccount = (id) => {
   return connection
     .query(
-      'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
+      'SELECT * FROM account WHERE account_id=? AND deleted_at IS NULL',
       [id],
     )
     .then((results) => {
       if (results.length === 0) {
-        throw new GroupNotFoundError()
+        throw new AccountNotFoundError()
       }
-      // Delete the group
+      // Delete the account
       return connection.query(
-        'UPDATE contact_group SET deleted_at=CURRENT_TIMESTAMP(3) WHERE contact_group_id=?',
-        [id],
-      )
-    })
-}
-
-const addMember = (contactGroupId, contactId) => {
-  return connection
-    .query(
-      'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
-      [contactGroupId],
-    )
-    .then((results) => {
-      if (results.length === 0) {
-        throw new GroupNotFoundError()
-      }
-
-      return connection.query(
-        'SELECT * FROM contact WHERE contact_id=? AND deleted_at IS NULL',
-        [contactId],
-      )
-    })
-    .then((results) => {
-      if (results.length === 0) {
-        throw new ContactNotFoundError()
-      }
-
-      return connection.query(
-        'INSERT INTO group_membership (contact_group_id, contact_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
-        [contactGroupId, contactId],
-      )
-    })
-    .then((results) => {
-      return connection.query(
-        'SELECT * FROM group_membership WHERE group_membership_id=?',
-        [results.insertId],
-      )
-    })
-}
-
-const removeMember = (id) => {
-  return connection
-    .query(
-      'SELECT * FROM group_membership WHERE group_membership_id=? AND deleted_at IS NULL',
-      [id],
-    )
-    .then((results) => {
-      if (results.length === 0) {
-        throw new GroupMembershipNotFoundError()
-      }
-
-      return connection.query(
-        'UPDATE group_membership SET deleted_at=CURRENT_TIMESTAMP(3) WHERE group_membership_id=?',
+        'UPDATE account SET deleted_at=CURRENT_TIMESTAMP(3) WHERE account_id=?',
         [id],
       )
     })
 }
 
 module.exports = {
-  fetchAllGroups,
-  createGroup,
-  deleteGroup,
-  addMember,
-  removeMember,
+  fetchAllAccounts,
+  createAccount,
+  deleteAccount,
 }

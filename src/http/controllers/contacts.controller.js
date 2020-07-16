@@ -25,6 +25,34 @@ const index = (req, res) => {
 }
 
 const fetch = (req, res) => {
+  if (validationResult(req).errors.length !== 0) {
+    responder.badRequestResponse(
+      res,
+      'invalid parameters',
+      validationResult(req).errors.map((error) => {
+        return error.msg
+      }),
+    )
+    return
+  }
+
+  contactsManager
+    .fetchContact(req.params.id)
+    .then((results) => {
+      const contact = results[0]
+      responder.successResponse(res, contactGoggles(contact))
+    })
+    .catch((err) => {
+      switch (err.constructor) {
+        case ContactNotFoundError:
+          responder.notFoundResponse(res, 'contact not found')
+          break
+        default:
+          console.log(err)
+          responder.ohShitResponse(res, err)
+      }
+    })
+
   responder.successResponse(res, { message: 'get contact' })
 }
 

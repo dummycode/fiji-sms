@@ -13,8 +13,9 @@ exports.validate = (method) => {
           'password',
           validationError('password', 'Password is required'),
         ).isString(),
-        body('email', validationError('email', 'Email is required')).isString(),
-        body('email', validationError('email', 'Email is not valid')).isEmail(),
+        body('email', validationError('email', '`email` is required')).isString(),
+        body('email', validationError('email', '`email` is not valid')).isEmail(),
+        body('account', validationError('account', '`account` must be an account id')).optional().isInt(),
       ]
     }
     case 'login': {
