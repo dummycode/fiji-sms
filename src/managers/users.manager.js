@@ -61,6 +61,7 @@ const createUser = async (username, password, email, account) => {
       ])
     })
 }
+
 const deleteUser = (id) => {
   return connection
     .query('SELECT * FROM user WHERE user_id=? AND deleted_at IS NULL', [id])

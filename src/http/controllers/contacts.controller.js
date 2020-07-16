@@ -52,8 +52,6 @@ const fetch = (req, res) => {
           responder.ohShitResponse(res, err)
       }
     })
-
-  responder.successResponse(res, { message: 'get contact' })
 }
 
 const create = (req, res) => {
