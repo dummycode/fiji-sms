@@ -11,6 +11,10 @@ const fetchAllAccounts = () => {
   )
 }
 
+const fetchAccount = async (id) => {
+  return connection.query('SELECT * FROM account WHERE account_id=? AND deleted_at IS NULL', [id])
+}
+
 const createAccount = async (name) => {
   const results = await connection
     .query(
@@ -46,6 +50,7 @@ const deleteAccount = (id) => {
 
 module.exports = {
   fetchAllAccounts,
+  fetchAccount,
   createAccount,
   deleteAccount,
 }

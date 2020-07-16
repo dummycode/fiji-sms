@@ -38,6 +38,14 @@ const createUser = async (username, password, email, account) => {
         throw new AccountNotFoundError()
       })
     account = results[0].account_id
+  } else {
+    // Ensure the account exists
+    const results = await accountsManager
+      .fetchAccount(account)
+
+    if (results.length === 0) {
+      throw new AccountNotFoundError
+    }
   }
 
   return bcrypt

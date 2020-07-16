@@ -6,6 +6,7 @@ var {
   UserNotFoundError,
   InvalidPasswordError,
   UserAlreadyExistsError,
+  AccountNotFoundError,
 } = require('../../core/errors')
 
 var userManager = require('../../managers/users.manager')
@@ -68,6 +69,9 @@ const register = (req, res) => {
     })
     .catch((err) => {
       switch (err.constructor) {
+        case AccountNotFoundError:
+          responder.badRequestResponse(res, 'Account not found')
+          return
         case UserAlreadyExistsError:
           responder.badRequestResponse(res, 'User already exists')
           return

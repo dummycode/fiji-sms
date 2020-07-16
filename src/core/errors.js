@@ -23,6 +23,11 @@ exports.GroupNotFoundError = class GroupNotFoundError extends Error {}
 exports.GroupMembershipNotFoundError = class GroupMembershipNotFoundError extends Error {}
 exports.GroupMembershipAlreadyExistsError = class GroupMembershipAlreadyExistsError extends Error {}
 
+/**
+ * Account errors
+ */
+exports.AccountNotFoundError = class AccountNotFoundError extends Error {}
+
 
 /**
  * Validation errors
