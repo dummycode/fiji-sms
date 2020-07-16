@@ -4,7 +4,7 @@ var responder = require('../../core/responder')
 
 var { AccountNotFoundError } = require('../../core/errors')
 
-var accountManager = require('../../managers/accounts.manager')
+var accountsManager = require('../../managers/accounts.manager')
 
 var accountGoggles = require('./goggles/account.goggles')
 
