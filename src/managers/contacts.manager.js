@@ -1,4 +1,6 @@
 var database = require('../core/database')
+var creator = require('./contacts/creator.js')
+
 var connection = database.getConnection()
 
 var {
@@ -11,37 +13,26 @@ const fetchAllContacts = () => {
   return connection.query('SELECT * FROM contact WHERE deleted_at IS NULL')
 }
 
+const fetchContact = (id) => {
+  return connection
+    .query('SELECT * FROM contact WHERE id=? AND deleted_at IS NULL', [id])
+    .then((results) => {
+      if (results.length === 0) {
+        throw new ContactNotFoundError()
+      }
+      return results
+    })
+}
+
 const fetchContactsForGroup = (groupId) => {
   return connection.query('SELECT * FROM (group_membership JOIN contact) WHERE group_id=? AND group_membership.deleted_at IS NULL', [groupId])
 }
 
-const createContact = (name, number) => {
-  return connection
-    .query(
-      'SELECT contact_id FROM contact WHERE phone_number=? AND deleted_at IS NULL',
-      [number],
-    )
-    .then((results) => {
-      if (results.length !== 0) {
-        throw new ContactAlreadyExistsError()
-      }
-      return connection.query(
-        'INSERT INTO contact (name, phone_number, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
-        [name, number],
-      )
-    })
-    .then((results) => {
-      return connection.query('SELECT * FROM contact WHERE contact_id=?', [
-        results.insertId,
-      ])
-    })
-}
+const createContact = creator.createContact
 
 const deleteContact = (id) => {
   return connection
-    .query('SELECT * FROM contact WHERE contact_id=? AND deleted_at IS NULL', [
-      id,
-    ])
+    .query('SELECT * FROM contact WHERE contact_id=? AND deleted_at IS NULL', [id])
     .then((results) => {
       if (results.length === 0) {
         throw new ContactNotFoundError()
@@ -56,6 +47,7 @@ const deleteContact = (id) => {
 
 module.exports = {
   fetchAllContacts,
+  fetchContact,
   fetchContactsForGroup,
   createContact,
   deleteContact,

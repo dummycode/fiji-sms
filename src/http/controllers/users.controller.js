@@ -61,7 +61,7 @@ const register = (req, res) => {
   }
 
   userManager
-    .createUser(req.body.username, req.body.password, req.body.email)
+    .createUser(req.body.username, req.body.password, req.body.email, req.body.account)
     .then((results) => {
       const user = results[0]
       responder.itemCreatedResponse(res, userGoggles(user), 'User created')
@@ -72,7 +72,7 @@ const register = (req, res) => {
           responder.badRequestResponse(res, 'User already exists')
           return
         default:
-          console.log(err)
+          console.log({err, message: err.message})
           responder.ohShitResponse(res, 'Unknown error occurred')
       }
     })

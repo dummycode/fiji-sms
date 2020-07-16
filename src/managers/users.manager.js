@@ -3,12 +3,14 @@ var jwt = require('jsonwebtoken')
 var database = require('../core/database')
 var connection = database.getConnection()
 var config = require('../core/config')
+var accountsManager = require('./accounts.manager')
 
 var {
   UserAlreadyExistsError,
   UserNotFoundError,
   EncryptionFailedError,
   InvalidPasswordError,
+  AccountNotFoundError,
 } = require('../core/errors')
 
 const fetchUser = (id) => {
@@ -18,29 +20,40 @@ const fetchUser = (id) => {
   )
 }
 
-const createUser = (username, password, email) => {
-  return connection
+const createUser = async (username, password, email, account) => {
+  const results = await connection
     .query('SELECT user_id FROM user WHERE username=? AND deleted_at IS NULL', [
       username,
     ])
-    .then((results) => {
-      if (results.length !== 0) {
-        throw new UserAlreadyExistsError()
-      }
 
-      return bcrypt
-        .hash(password, 8)
-        .then((hash) => {
-          password = hash
+  if (results.length !== 0) {
+    throw new UserAlreadyExistsError()
+  }
 
-          return connection.query(
-            'INSERT INTO user (username, password, email, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP(3))',
-            [username, password, email],
-          )
-        })
-        .catch((err) => {
-          throw new EncryptionFailedError()
-        })
+  // Account not specified, create one now
+  if (!account) {
+    const results = await accountsManager
+      .createAccount(username)
+      .catch((err) => {
+        throw new AccountNotFoundError()
+      })
+    account = results[0].account_id
+  }
+
+  return bcrypt
+    .hash(password, 8)
+    .then((hash) => {
+      password = hash
+
+      return connection.query(
+        `INSERT INTO user (username, password, email, is_admin, account, created_at)
+         VALUES (?, ?, ?, false, ?, CURRENT_TIMESTAMP(3))`,
+        [username, password, email, account],
+      )
+    })
+    .catch((err) => {
+      console.log(err)
+      throw new EncryptionFailedError()
     })
     .then((results) => {
       return connection.query('SELECT * FROM user WHERE user_id = ?', [
@@ -48,7 +61,6 @@ const createUser = (username, password, email) => {
       ])
     })
 }
-
 const deleteUser = (id) => {
   return connection
     .query('SELECT * FROM user WHERE user_id=? AND deleted_at IS NULL', [id])
