@@ -11,18 +11,19 @@ const fetchAllAccounts = () => {
   )
 }
 
-const createAccount = (name) => {
-  return connection
+const createAccount = async (name) => {
+  const results = await connection
     .query(
       'INSERT INTO account (name, created_at) VALUES (?, CURRENT_TIMESTAMP(3))',
       [name],
     )
-    .then((results) => {
-      return connection.query(
-        'SELECT * FROM account WHERE account_id=?',
-        [results.insertId],
-      )
-    })
+
+  const user = await connection.query(
+    'SELECT * FROM account WHERE account_id=?',
+    [results.insertId],
+  )
+
+  return user
 }
 
 const deleteAccount = (id) => {

@@ -20,50 +20,46 @@ const fetchUser = (id) => {
   )
 }
 
-const createUser = (username, password, email, account) => {
-  return connection
+const createUser = async (username, password, email, account) => {
+  const results = await connection
     .query('SELECT user_id FROM user WHERE username=? AND deleted_at IS NULL', [
       username,
     ])
+
+  if (results.length !== 0) {
+    throw new UserAlreadyExistsError()
+  }
+
+  // Account not specified, create one now
+  if (!account) {
+    const results = await accountsManager
+      .createAccount(username)
+      .catch((err) => {
+        throw new AccountNotFoundError()
+      })
+    account = results[0].account_id
+  }
+
+  return bcrypt
+    .hash(password, 8)
+    .then((hash) => {
+      password = hash
+
+      return connection.query(
+        `INSERT INTO user (username, password, email, is_admin, account, created_at)
+         VALUES (?, ?, ?, false, ?, CURRENT_TIMESTAMP(3))`,
+        [username, password, email, account],
+      )
+    })
+    .catch((err) => {
+      console.log(err)
+      throw new EncryptionFailedError()
+    })
     .then((results) => {
-      if (results.length !== 0) {
-        throw new UserAlreadyExistsError()
-      }
-
-      // Account not specified, create one now
-      if (!account) {
-        accountsManager
-          .createAccount(username)
-          .then((results) => {
-            account = results[0].account_id
-          })
-          .catch((err) => {
-            throw new AccountNotFoundError()
-          })
-      }
-
-      return bcrypt
-        .hash(password, 8)
-        .then((hash) => {
-          password = hash
-
-          return connection.query(
-            `INSERT INTO user (username, password, email, is_admin, account, created_at)
-             VALUES (?, ?, ?, false, ?, CURRENT_TIMESTAMP(3))`,
-            [username, password, email, account],
-          )
-        })
-        .catch((err) => {
-          console.log(err)
-          throw new EncryptionFailedError()
-        })
-
-      })
-      .then((results) => {
-        return connection.query('SELECT * FROM user WHERE user_id = ?', [
-          results.insertId,
-        ])
-      })
+      return connection.query('SELECT * FROM user WHERE user_id = ?', [
+        results.insertId,
+      ])
+    })
 }
 const deleteUser = (id) => {
   return connection
