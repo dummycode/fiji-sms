@@ -13,14 +13,14 @@ TOKEN = sys.argv[2]
 with open(FILENAME) as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
-        name = row[0].strip() + ' ' + row[1].strip()
-        number = row[2].strip()
+        name = row[1].strip() + ' ' + row[2].strip()
+        number = row[4].strip()
 
         JSON = {
             'name': name,
             'phone_number': number,
         }
-
+        
         r = requests.post(url=URL, json=JSON, headers={'x-access-token': TOKEN})
 
         data = r.json()
