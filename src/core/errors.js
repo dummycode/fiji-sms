@@ -43,3 +43,8 @@ exports.ValidationFailedError = class ValidationFailedError extends Error {
  * Encryption errors
  */
 exports.EncryptionFailedError = class EncryptionFailedError extends Error {}
+
+/**
+ * Twilio errors
+ */
+exports.TwilioError = class TwilioError extends Error {}

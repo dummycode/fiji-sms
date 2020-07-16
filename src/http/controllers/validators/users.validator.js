@@ -7,33 +7,33 @@ exports.validate = (method) => {
       return [
         body(
           'username',
-          validationError('username', 'Username is required'),
+          validationError('username', '`username` is required'),
         ).isString(),
         body(
           'password',
-          validationError('password', 'Password is required'),
+          validationError('password', '`password` is required'),
         ).isString(),
         body('email', validationError('email', '`email` is required')).isString(),
         body('email', validationError('email', '`email` is not valid')).isEmail(),
-        body('account', validationError('account', '`account` must be an account id')).optional().isInt(),
+        body('accountId', validationError('accountId', '`accountId` must be an account id')).optional().isInt(),
       ]
     }
     case 'login': {
       return [
         body(
           'username',
-          validationError('username', 'Username is required'),
+          validationError('username', '`username` is required'),
         ).isString(),
         body(
           'password',
-          validationError('password', 'Password is required'),
+          validationError('password', '`password` is required'),
         ).isString(),
       ]
     }
     case 'remove': {
       return [
-        param('id', validationError('id', 'id is required')).exists(),
-        param('id', validationError('id', 'id must be an integer')).isInt(),
+        param('id', validationError('id', '`id` is required')).exists(),
+        param('id', validationError('id', '`id` must be an integer')).isInt(),
       ]
     }
     default: {

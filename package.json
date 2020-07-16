@@ -19,5 +19,10 @@
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
     "twilio": "^3.33.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }

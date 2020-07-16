@@ -27,8 +27,10 @@ const fetchContact = async (id) => {
 
 const fetchContactsForGroup = (groupId) => {
   return connection.query(
-    `SELECT * FROM (group_membership JOIN contact)
-     WHERE group_id=? AND group_membership.deleted_at IS NULL`,
+    `SELECT * FROM (group_membership LEFT JOIN contact USING (contact_id))
+     WHERE contact_group_id=?
+       AND group_membership.deleted_at IS NULL
+       AND contact.deleted_at IS NULL`,
     [groupId]
   )
 }

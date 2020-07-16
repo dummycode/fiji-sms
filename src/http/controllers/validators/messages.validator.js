@@ -7,8 +7,8 @@ exports.validate = (method) => {
     }
     case 'send': {
       return [
-        body('message', 'message does not exist').isString(),
-        body('groupId', 'Group ID must be an int').optional().isInt(),
+        body('message', '`message` does not exist').isString(),
+        body('contactGroupId', '`contactGroupId` must be an int').optional().isInt(),
       ]
     }
     default: {

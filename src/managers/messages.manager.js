@@ -1,7 +1,12 @@
-var database = require('../core/database')
-var connection = database.getConnection()
+const database = require('../core/database')
+const sender = require('./messages/sender')
+const creator = require('./messages/creator')
 
-var { MessageNotFoundError } = require('../core/errors')
+const { MessageNotFoundError } = require('../core/errors')
+
+const connection = database.getConnection()
+
+const send = sender.send
 
 const fetchAllMessages = () => {
   return connection.query(
@@ -9,18 +14,7 @@ const fetchAllMessages = () => {
   )
 }
 
-const createMessage = (content, creator) => {
-  return connection
-    .query(
-      'INSERT INTO message(content, created_by, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
-      [content, creator],
-    )
-    .then((results) => {
-      return connection.query('SELECT * FROM message WHERE message_id = ?', [
-        results.insertId,
-      ])
-    })
-}
+const createMessage = creator.create
 
 const deleteMesasge = (id) => {
   return connection
@@ -40,6 +34,7 @@ const deleteMesasge = (id) => {
 }
 
 module.exports = {
+  send,
   fetchAllMessages,
   createMessage,
   deleteMesasge,

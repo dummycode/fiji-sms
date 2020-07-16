@@ -1,5 +1,6 @@
 var database = require('../core/database')
 var connection = database.getConnection()
+var creator = require('./groups/creator')
 
 var {
   GroupNotFoundError,
@@ -17,7 +18,7 @@ const fetchAllGroups = () => {
 const fetch = (groupId) => {
   return connection
     .query(
-      'SELECT * from contact_group WHERE group_id=? AND deleted_at IS NULL',
+      'SELECT * from contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
       [groupId],
     )
     .then((results) => {
@@ -28,23 +29,12 @@ const fetch = (groupId) => {
     })
 }
 
-const createGroup = (name) => {
-  return connection
-    .query(
-      'INSERT INTO contact_group (name, created_at) VALUES (?, CURRENT_TIMESTAMP(3))',
-      [name],
-    )
-    .then((results) => {
-      return connection.query('SELECT * FROM contact_group WHERE group_id=?', [
-        results.insertId,
-      ])
-    })
-}
+const createGroup = creator.createGroup
 
 const deleteGroup = (id) => {
   return connection
     .query(
-      'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
+      'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
       [id],
     )
     .then((results) => {
@@ -53,7 +43,7 @@ const deleteGroup = (id) => {
       }
       // Delete the group
       return connection.query(
-        'UPDATE contact_group SET deleted_at=CURRENT_TIMESTAMP(3) WHERE group_id=?',
+        'UPDATE contact_group SET deleted_at=CURRENT_TIMESTAMP(3) WHERE contact_group_id=?',
         [id],
       )
     })
@@ -62,7 +52,7 @@ const deleteGroup = (id) => {
 const addMember = (groupId, contactId) => {
   return connection
     .query(
-      'SELECT * FROM group_membership WHERE group_id=? AND contact_id=? AND deleted_at IS NULL',
+      'SELECT * FROM group_membership WHERE contact_group_id=? AND contact_id=? AND deleted_at IS NULL',
       [groupId, contactId],
     )
     .then((results) => {
@@ -70,7 +60,7 @@ const addMember = (groupId, contactId) => {
         throw new GroupMembershipAlreadyExistsError()
       }
       return connection.query(
-        'SELECT * FROM contact_group WHERE group_id=? AND deleted_at IS NULL',
+        'SELECT * FROM contact_group WHERE contact_group_id=? AND deleted_at IS NULL',
         [groupId],
       )
     })
@@ -90,7 +80,7 @@ const addMember = (groupId, contactId) => {
       }
 
       return connection.query(
-        'INSERT INTO group_membership (group_id, contact_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
+        'INSERT INTO group_membership (contact_group_id, contact_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP(3))',
         [groupId, contactId],
       )
     })
